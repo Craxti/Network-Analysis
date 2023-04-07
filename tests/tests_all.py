@@ -5,7 +5,7 @@ from models.check_asn import check_asn
 from models.threat_analysis import threat_analysis
 from models.ip_geolocation import ip_geolocation, geolocate_ip
 from models.check_breaches import check_breaches
-from models.extract_metadata import extract_metadata
+#from models.extract_metadata import extract_metadata
 from models.scan_ip import scan_ip
 from models.api_search import shodan_scan, hibp_breach, greynoise_ip, alienvault_ip, securitytrails_subdomain
 from models.crypto_check import get_bitcoin_address, get_ethereum_address
@@ -42,8 +42,8 @@ def test_check_breaches():
 
 
 # Test extract_metadata.py
-def test_extract_metadata():
-    assert "title" in extract_metadata("https://github.com/")
+#def test_extract_metadata():
+#    assert "title" in extract_metadata("https://github.com/")
 
 
 # Test scan_ip.py

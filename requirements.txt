@@ -16,4 +16,5 @@ eth-account==0.8.0
 dnspython==2.3.0
 ipaddress
 pytest
+ip2location==8.9.0
 exifread==3.0.0
