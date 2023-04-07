@@ -1,0 +1,7 @@
+{
+    "shodan": "YOUR_SHODAN_API_KEY",
+    "hibp": "YOUR_HIBP_API_KEY",
+    "greynoise": "YOUR_GREYNOISE_API_KEY",
+    "alienvault": "YOUR_ALIENVAULT_API_KEY",
+    "securitytrails": "YOUR_SECURITYTRAILS_API_KEY"
+}
