@@ -1,5 +1,4 @@
 import socket
-import argparse
 from concurrent.futures import ThreadPoolExecutor
 
 def scan_port(ip, port):
