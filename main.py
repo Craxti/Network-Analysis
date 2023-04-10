@@ -27,7 +27,6 @@ parser.add_argument('-f', '--format', metavar='FORMAT', help='Output format (csv
 parser.add_argument('-i', '--include', metavar='FIELD', nargs='+', help='Include only specified metadata fields')
 parser.add_argument('-r', '--recursive', action='store_true', help='Process files in subdirectories')
 
-
 parser.add_argument('-p', '--scan_ip', metavar='IP_ADDRESS', help='Scan an IP address for open ports')
 parser.add_argument('--hibp', action='store_true', help='Check if email has been breached using HIBP API')
 parser.add_argument('--greynoise', action='store_true', help='Get information on IP address using GreyNoise API')

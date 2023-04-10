@@ -1,24 +1,52 @@
 import requests
+from bs4 import BeautifulSoup
+
+
+class Threat:
+    def __init__(self, name, description, score):
+        self.name = name
+        self.description = description
+        self.score = score
+
+    def __str__(self):
+        return f"{self.name} ({self.score}): {self.description}"
 
 
 def threat_analysis(ip_address):
-    url = f"https://ipinfo.io/{ip_address}/abuse_reports"
+    threats = []
 
-    try:
-        response = requests.get(url)
-        response.raise_for_status()
-        data = response.json()
-        if not data:
-            return f"No abuse reports found for {ip_address}"
+    # Check for malware and phishing using urlquery.net
+    url = f"https://urlquery.net/ip/{ip_address}"
+    response = requests.get(url)
+    soup = BeautifulSoup(response.text, "html.parser")
 
-        threats = {}
-        for report in data:
-            threat_type = report.get('category')
-            if threat_type in threats:
-                threats[threat_type].append(report)
-            else:
-                threats[threat_type] = [report]
+    # Malware
+    malware = soup.find("span", {"class": "label-danger"})
+    if malware is not None:
+        name = "Malware"
+        description = "This IP has been associated with malware activity."
+        score = 10
+        threats.append(Threat(name, description, score))
 
-        return threats
-    except requests.exceptions.RequestException as e:
-        return f"Error: {e}"
+    # Phishing
+    phishing = soup.find("span", {"class": "label-warning"})
+    if phishing is not None:
+        name = "Phishing"
+        description = "This IP has been associated with phishing activity."
+        score = 8
+        threats.append(Threat(name, description, score))
+
+    # Check for brute force attacks using badips.com
+    url = f"https://www.badips.com/get/list/ssh/2?ip={ip_address}"
+    response = requests.get(url)
+    soup = BeautifulSoup(response.text, "html.parser")
+
+    # Brute force attacks
+    badips = soup.find_all("tr")
+    if len(badips) > 1:
+        name = "Brute Force"
+        description = f"This IP has been associated with {len(badips) - 1} SSH brute force attacks."
+        score = len(badips) - 1
+        threats.append(Threat(name, description, score))
+
+    return threats
