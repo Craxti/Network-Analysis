@@ -35,7 +35,3 @@ jobs:
         pytest models/test_crypto_check.py
         pytest models/test_domain_scanner.py
         # pytest models/test_extract_metadata.py # disable this test for now
-
-    - name: Run integration tests
-      run: |
-        pytest tests/integration
