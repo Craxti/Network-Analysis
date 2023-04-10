@@ -24,3 +24,4 @@ pdfminer
 PIL
 pdfminer
 beautifulsoup4
+geoip2

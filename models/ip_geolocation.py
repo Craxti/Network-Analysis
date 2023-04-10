@@ -1,28 +1,44 @@
+import os
+import json
+import geoip2.database
+import ipaddress
 import requests
 
 
 def ip_geolocation(ip_address):
-    """
-    Return info for geo IP-address for service ipapi
-    """
-    url = f"http://ipapi.co/{ip_address}/json/"
-    response = requests.get(url)
-    if response.status_code == 200:
-        return response.json()
-    else:
-        return {"error": "Failed to get location information"}
+    try:
+        # Open the GeoLite2-City database and get the geolocation data for the IP address
+        reader = geoip2.database.Reader('GeoLite2-City.mmdb')
+        response = reader.city(ip_address)
+        city = response.city.name
+        country = response.country.name
+        subdivision = response.subdivisions.most_specific.name
+        latitude = response.location.latitude
+        longitude = response.location.longitude
+        reader.close()
 
+        # Get the ASN information for the IP address
+        url = f'https://rdap.arin.net/registry/ip/{ip_address}'
+        response = requests.get(url).json()
+        asn = response['entities'][0]['handle']
+        asn_url = f'https://rdap.arin.net/registry/autnum/{asn}'
+        response = requests.get(asn_url).json()
+        asn_name = response['name']
+        asn_description = response['entities'][0]['roles'][0]
 
-def geolocate_ip(ip):
-    url = f"http://ip-api.com/json/{ip}"
-    response = requests.get(url)
-    data = response.json()
+        # Create a dictionary with the geolocation and ASN information
+        geolocation = {
+            'ip_address': str(ip_address),
+            'city': city,
+            'country': country,
+            'subdivision': subdivision,
+            'latitude': latitude,
+            'longitude': longitude,
+            'asn': asn,
+            'asn_name': asn_name,
+            'asn_description': asn_description
+        }
+        return geolocation
 
-    if data["status"] == "success":
-        country = data["country"]
-        city = data["city"]
-        lat = data["lat"]
-        lon = data["lon"]
-        return f"{ip} is located in {city}, {country} (lat: {lat}, lon: {lon})"
-    else:
-        return f"Failed to geolocate {ip}. Error: {data['message']}"
+    except Exception as e:
+        return str(e)
