@@ -8,9 +8,9 @@ jupyter-client==7.1.0
 jupyter-core==4.9.1
 pyasn1==0.4.8
 pyasn1-modules==0.2.8
-pyshodan==3.0.0
+pyshodan==0.2.5
 requests==2.26.0
-shodan==2.0.0
+shodan==1.28.0
 bitcoin
 eth-account==0.8.0
 dnspython==2.3.0

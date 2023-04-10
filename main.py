@@ -38,8 +38,11 @@ args = parser.parse_args()
 
 # call the appropriate function based on the argument passed
 if args.scan_network:
-    results = scan_network(args.scan_network)
-    print(results)
+    ip_range = args.scan_network
+    active_hosts = scan_network(ip_range)
+    print(f"Active hosts in {ip_range}:")
+    for host in active_hosts:
+        print(host)
 elif args.check_asn:
     results = check_asn(args.check_asn)
     print(results)
