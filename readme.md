@@ -49,3 +49,18 @@ Scan a subdomain with SecurityTrails
 Geolocate an IP address
 
 `python main.py --ip_geolocation 8.8.8.8`
+
+Check if a given Bitcoin or Ethereum address has been involved in any known scams or hacks
+
+`python crypto_check.py --address 1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa
+python crypto_check.py --address 0x742d35Cc6634C0532925a3b844Bc454e4438f44e`
+
+Perform searches on various APIs
+
+`python api_search.py --query shodan --ip 192.168.1.1
+python api_search.py --query hibp --email user@example.com`
+
+
+**Contributing**
+
+Contributions are welcome! If you find a bug or have an idea for a new feature, feel free to open an issue or submit a pull request.
