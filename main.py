@@ -21,7 +21,13 @@ parser.add_argument('-t', '--threat_analysis', metavar='IP_ADDRESS', help='Perfo
 parser.add_argument('-geo', '--ip_geolocation', metavar='IP_ADDRESS', help='Perform threat analysis on an IP address')
 parser.add_argument('-g', '--geolocate_ip', metavar='IP_ADDRESS', help='Geolocate an IP address')
 parser.add_argument('-b', '--check_breaches', metavar='EMAIL', help='Check if an email has been involved in a data breach')
-parser.add_argument('-e', '--extract_metadata', metavar='DIRECTORY', help='Extract metadata from JPEG and PDF files in a directory')
+#extract_metadata
+parser.add_argument('-e', '--extract_metadata', metavar='DIRECTORY', help='Extract metadata from files in a directory')
+parser.add_argument('-f', '--format', metavar='FORMAT', help='Output format (csv, json, etc.)')
+parser.add_argument('-i', '--include', metavar='FIELD', nargs='+', help='Include only specified metadata fields')
+parser.add_argument('-r', '--recursive', action='store_true', help='Process files in subdirectories')
+
+
 parser.add_argument('-p', '--scan_ip', metavar='IP_ADDRESS', help='Scan an IP address for open ports')
 parser.add_argument('--hibp', action='store_true', help='Check if email has been breached using HIBP API')
 parser.add_argument('--greynoise', action='store_true', help='Get information on IP address using GreyNoise API')
@@ -53,7 +59,7 @@ elif args.check_breaches:
     results = check_breaches(args.check_breaches)
     print(results)
 elif args.extract_metadata:
-    results = extract_metadata(args.extract_metadata)
+    results = extract_metadata(args.extract_metadata, args.format, args.include, args.recursive)
     print(results)
 elif args.scan_ip:
     results = scan_ip(args.scan_ip)

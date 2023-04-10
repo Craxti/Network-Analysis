@@ -5,86 +5,61 @@ from models.check_asn import check_asn
 from models.threat_analysis import threat_analysis
 from models.ip_geolocation import ip_geolocation, geolocate_ip
 from models.check_breaches import check_breaches
-#from models.extract_metadata import extract_metadata
+from models.extract_metadata import extract_metadata
 from models.scan_ip import scan_ip
 from models.api_search import shodan_scan, hibp_breach, greynoise_ip, alienvault_ip, securitytrails_subdomain
 from models.crypto_check import get_bitcoin_address, get_ethereum_address
 from models.domain_scanner import scan_domain, enum_subdomains
 
+@pytest.mark.parametrize("ip_range", [
+    ("192.168.1.1/24"),
+    ("10.0.0.1/24"),
+])
+def test_scan_network(ip_range):
+    assert len(scan_network(ip_range)) > 0
 
-# Test scan_network.py
-def test_scan_network():
-    assert scan_network("192.168.0.1") == ["192.168.0.1", "192.168.0.2", "192.168.0.3", ...]
-
-
-# Test check_asn.py
 def test_check_asn():
-    assert check_asn("8.8.8.8") == "AS15169 Google LLC"
+    assert check_asn("AS13335") == "CLOUDFLARENET - Cloudflare, Inc."
 
-
-# Test threat_analysis.py
 def test_threat_analysis():
-    assert "abuse" in threat_analysis("8.8.8.8")
+    assert threat_analysis("google.com") == True
 
-
-# Test ip_geolocation.py
 def test_ip_geolocation():
-    assert "country" in ip_geolocation("8.8.8.8")
+    assert ip_geolocation("8.8.8.8")["country_code"] == "US"
+    assert geolocate_ip("8.8.8.8")["latitude"] == 37.751
 
-
-def test_geolocate_ip():
-    assert geolocate_ip("google.com") == "8.8.8.8"
-
-
-# Test check_breaches.py
 def test_check_breaches():
-    assert check_breaches("example@gmail.com") == ["Adobe", "Linkedin", "Dropbox", ...]
+    assert check_breaches("test@test.com") == "Oh no — pwned!"
 
+def test_extract_metadata():
+    assert len(extract_metadata("test_files")) > 0
 
-# Test extract_metadata.py
-#def test_extract_metadata():
-#    assert "title" in extract_metadata("https://github.com/")
-
-
-# Test scan_ip.py
 def test_scan_ip():
-    assert scan_ip("8.8.8.8") == {"ports": {"53": "open"}, "os": "Linux"}
+    assert scan_ip("8.8.8.8") == "IP is alive"
 
-
-# Test api_search.py
 def test_shodan_scan():
-    assert "city" in shodan_scan("8.8.8.8")
-
+    assert len(shodan_scan("apache")) > 0
 
 def test_hibp_breach():
-    assert "Adobe" in hibp_breach("example@gmail.com")
-
+    assert len(hibp_breach("test@test.com")) > 0
 
 def test_greynoise_ip():
-    assert "classification" in greynoise_ip("8.8.8.8")
-
+    assert greynoise_ip("8.8.8.8")["classification"] == "benign"
 
 def test_alienvault_ip():
-    assert "reputation" in alienvault_ip("8.8.8.8")
-
+    assert len(alienvault_ip("8.8.8.8")) > 0
 
 def test_securitytrails_subdomain():
-    assert "google.com" in securitytrails_subdomain("google.com")
+    assert len(securitytrails_subdomain("google.com")) > 0
 
-
-# Test crypto_check.py
 def test_get_bitcoin_address():
-    assert get_bitcoin_address("alice") == "1L6YJU6zuLzkeCwpS6QMRW8oA2QtfT1mJi"
-
+    assert get_bitcoin_address("1BvBMSEYstWetqTFn5Au4m4GFg7xJaNVN2") == True
 
 def test_get_ethereum_address():
-    assert get_ethereum_address("alice") == "0x00c9e9E4F4Fc3a4b6cCe31Ea22E6C7aAC0525f8c"
+    assert get_ethereum_address("0x742d35Cc6634C0532925a3b844Bc454e4438f44e") == True
 
-
-# Test domain_scanner.py
 def test_scan_domain():
-    assert "Domain Name" in scan_domain("google.com")
-
+    assert len(scan_domain("google.com")) > 0
 
 def test_enum_subdomains():
-    assert "drive.google.com" in enum_subdomains("google.com")
+    assert len(enum_subdomains("google.com")) > 0

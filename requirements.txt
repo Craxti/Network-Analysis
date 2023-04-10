@@ -18,3 +18,8 @@ ipaddress
 pytest
 ip2location==8.9.0
 exifread==3.0.0
+docx
+filetype
+pdfminer
+PIL
+pdfminer
