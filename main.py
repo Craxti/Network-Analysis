@@ -3,7 +3,7 @@ import argparse
 from models.scan_network import scan_network
 from models.check_asn import check_asn
 from models.threat_analysis import threat_analysis
-from models.ip_geolocation import ip_geolocation, geolocate_ip
+from models.ip_geolocation import ip_geolocation
 from models.check_breaches import check_breaches
 from models.extract_metadata import extract_metadata
 from models.scan_ip import scan_ip
@@ -19,7 +19,6 @@ parser.add_argument('-s', '--scan_network', metavar='CIDR_ADDRESS', help='Scan a
 parser.add_argument('-c', '--check_asn', metavar='ASN', help='Check information about an ASN')
 parser.add_argument('-t', '--threat_analysis', metavar='IP_ADDRESS', help='Perform threat analysis on an IP address')
 parser.add_argument('-geo', '--ip_geolocation', metavar='IP_ADDRESS', help='Perform threat analysis on an IP address')
-parser.add_argument('-g', '--geolocate_ip', metavar='IP_ADDRESS', help='Geolocate an IP address')
 parser.add_argument('-b', '--check_breaches', metavar='EMAIL', help='Check if an email has been involved in a data breach')
 #extract_metadata
 parser.add_argument('-e', '--extract_metadata', metavar='DIRECTORY', help='Extract metadata from files in a directory')
@@ -51,8 +50,6 @@ elif args.check_asn:
 elif args.threat_analysis:
     results = threat_analysis(args.threat_analysis)
     print(results)
-elif args.geolocate_ip:
-    results = geolocate_ip(args.geolocate_ip)
     print(results)
 elif args.check_breaches:
     results = check_breaches(args.check_breaches)

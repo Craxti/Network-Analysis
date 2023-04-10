@@ -2,66 +2,61 @@ import socket
 import re
 
 
-def scan_domain(domain, ports=None):
+def scan_ip(target, ports=None, subdomains=None):
     """
-    Scans a domain for open ports.
-    :param domain: The domain to scan.
+    Scans an IP address for open ports and enumerates subdomains.
+    :param target: The IP address to scan.
     :param ports: A list of ports to scan. If None, will scan the top 1000 ports.
+    :param subdomains: A list of subdomains to enumerate. If None, will enumerate common subdomains.
     :return: A dictionary containing the results of the scan.
     """
     result = {
-        'domain': domain,
+        'target': target,
         'open_ports': [],
-        'closed_ports': []
+        'closed_ports': [],
+        'subdomains': {}
     }
 
     if not ports:
         ports = get_top_ports(1000)
 
+    if not subdomains:
+        subdomains = ['www', 'ftp', 'mail', 'webmail', 'smtp', 'imap', 'pop', 'ns1', 'ns2']
+
     for port in ports:
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         s.settimeout(1)
         try:
-            s.connect((domain, port))
+            s.connect((target, port))
             result['open_ports'].append(port)
         except:
             result['closed_ports'].append(port)
         finally:
             s.close()
 
-    return result
-
-
-def enum_subdomains(domain, types=None, ports=None):
-    """
-    Enumerates subdomains of a domain.
-    :param domain: The domain to enumerate subdomains for.
-    :param types: A list of domain types to enumerate (e.g. ['www', 'ftp']). If None, will enumerate all common subdomain types.
-    :param ports: A list of ports to scan. If None, will scan the top 1000 ports.
-    :return: A dictionary containing the results of the subdomain enumeration and port scanning.
-    """
-    result = {
-        'domain': domain,
-        'subdomains': {}
-    }
-
-    if not types:
-        types = ['www', 'ftp', 'mail', 'webmail', 'smtp', 'imap', 'pop', 'ns1', 'ns2']
-
-    for subdomain_type in types:
-        subdomain = subdomain_type + '.' + domain
+    for subdomain_type in subdomains:
+        subdomain = subdomain_type + '.' + target
         try:
             ip = socket.gethostbyname(subdomain)
             result['subdomains'][subdomain] = {
-                'ip': ip
+                'ip': ip,
+                'open_ports': [],
+                'closed_ports': []
             }
-            if ports:
-                result['subdomains'][subdomain]['scan'] = scan_domain(ip, ports=ports)
+            for port in ports:
+                s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                s.settimeout(1)
+                try:
+                    s.connect((ip, port))
+                    result['subdomains'][subdomain]['open_ports'].append(port)
+                except:
+                    result['subdomains'][subdomain]['closed_ports'].append(port)
+                finally:
+                    s.close()
         except:
             pass
 
     return result
-
 
 def get_top_ports(num_ports):
     """

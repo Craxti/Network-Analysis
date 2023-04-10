@@ -1,41 +1,83 @@
-import os
-import dns.resolver
+import socket
+import argparse
+import re
+import sys
 
 
-def scan_domain(domain_name, query_type='A', save_results=False):
-    try:
-        answers = dns.resolver.resolve(domain_name, query_type)
-    except dns.resolver.NoAnswer:
-        result = f"No records found for {domain_name}"
-    except dns.resolver.NXDOMAIN:
-        result = f"{domain_name} does not exist"
-    else:
-        records = [answer.to_text() for answer in answers]
-        result = {"Domain Name": domain_name, "Records": records}
+def scan_domain(domain, ports=None):
+    """
+    Scans a domain for open ports.
+    :param domain: The domain to scan.
+    :param ports: A list of ports to scan. If None, will scan the top 1000 ports.
+    :return: A dictionary containing the results of the scan.
+    """
+    result = {
+        'domain': domain,
+        'open_ports': [],
+        'closed_ports': []
+    }
 
-        if save_results:
-            with open(f"{domain_name}_{query_type}.txt", "w") as f:
-                f.write("\n".join(records))
+    if not ports:
+        ports = get_top_ports(1000)
+
+    for port in ports:
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s.settimeout(1)
+        try:
+            s.connect((domain, port))
+            result['open_ports'].append(port)
+        except:
+            result['closed_ports'].append(port)
+        finally:
+            s.close()
 
     return result
 
 
-def enum_subdomains(domain_name, save_results=False):
-    subdomains = []
+def enum_subdomains(domain, types=None, ports=None):
+    """
+    Enumerates subdomains of a domain.
+    :param domain: The domain to enumerate subdomains for.
+    :param types: A list of domain types to enumerate (e.g. ['www', 'ftp']). If None, will enumerate all common subdomain types.
+    :param ports: A list of ports to scan. If None, will scan the top 1000 ports.
+    :return: A dictionary containing the results of the subdomain enumeration and port scanning.
+    """
+    result = {
+        'domain': domain,
+        'subdomains': {}
+    }
 
-    wordlist_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "wordlists", "subdomains.txt")
-    with open(wordlist_path, "r") as f:
-        subdomain_list = [line.strip() for line in f.readlines()]
+    if not types:
+        types = ['www', 'ftp', 'mail', 'webmail', 'smtp', 'imap', 'pop', 'ns1', 'ns2']
 
-    for subdomain in subdomain_list:
+    for subdomain_type in types:
+        subdomain = subdomain_type + '.' + domain
         try:
-            dns.resolver.resolve(f"{subdomain}.{domain_name}", "A")
-            subdomains.append(f"{subdomain}.{domain_name}")
-        except dns.resolver.NXDOMAIN:
+            ip = socket.gethostbyname(subdomain)
+            result['subdomains'][subdomain] = {
+                'ip': ip
+            }
+            if ports:
+                result['subdomains'][subdomain]['scan'] = scan_domain(ip, ports=ports)
+        except:
             pass
 
-    if save_results:
-        with open(f"{domain_name}_subdomains.txt", "w") as f:
-            f.write("\n".join(subdomains))
+    return result
 
-    return subdomains
+
+def get_top_ports(num_ports):
+    """
+    Returns the top num_ports most commonly used ports.
+    :param num_ports: The number of ports to return.
+    :return: A list of the top num_ports most commonly used ports.
+    """
+    top_ports = []
+    with open('/etc/services', 'r') as f:
+        lines = f.readlines()
+        for line in lines:
+            match = re.search(r'^\w+\s+(\d+)/\w+', line)
+            if match:
+                top_ports.append(int(match.group(1)))
+            if len(top_ports) == num_ports:
+                break
+    return top_ports
