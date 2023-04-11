@@ -21,6 +21,7 @@ exifread==3.0.0
 docx
 filetype
 pdfminer
+pdfminer.six
 python-pptx
 Pillow
 pdfminer
