@@ -3,7 +3,7 @@ import csv
 import json
 from PIL import Image
 from pdfminer.high_level import extract_text
-from docx import Document
+import docx
 from pptx import Presentation
 import exifread
 import filetype
@@ -31,7 +31,7 @@ def extract_metadata(file_path, output_format=None, selected_fields=None, recurs
         metadata = extract_text(file_path)
 
     elif file_extension == ".docx":
-        document = Document(file_path)
+        document = docx.Document(file_path)
         metadata = {}
         for paragraph in document.paragraphs:
             text = paragraph.text

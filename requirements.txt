@@ -21,7 +21,8 @@ exifread==3.0.0
 docx
 filetype
 pdfminer
-PIL
+python-pptx
+Pillow
 pdfminer
 beautifulsoup4
 geoip2

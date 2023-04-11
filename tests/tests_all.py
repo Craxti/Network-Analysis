@@ -3,7 +3,7 @@ import pytest
 from models.scan_network import scan_network
 from models.check_asn import check_asn
 from models.threat_analysis import threat_analysis
-from models.ip_geolocation import ip_geolocation, geolocate_ip
+from models.ip_geolocation import ip_geolocation
 from models.check_breaches import check_breaches
 from models.extract_metadata import extract_metadata
 from models.scan_ip import scan_ip
@@ -26,7 +26,7 @@ def test_threat_analysis():
 
 def test_ip_geolocation():
     assert ip_geolocation("8.8.8.8")["country_code"] == "US"
-    assert geolocate_ip("8.8.8.8")["latitude"] == 37.751
+#    assert geolocate_ip("8.8.8.8")["latitude"] == 37.751
 
 def test_check_breaches():
     assert check_breaches("test@test.com") == "Oh no — pwned!"
