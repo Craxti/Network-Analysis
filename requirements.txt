@@ -2,6 +2,7 @@ beautifulsoup4==4.10.0
 bs4==0.0.1
 docopt==0.6.2
 dnspython
+flake8
 geoip2==4.1.0
 ipython==7.30.1
 jupyter-client==7.1.0
