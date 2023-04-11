@@ -1,0 +1,47 @@
+name: "CodeQL"
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  analyze:
+    name: Analyze
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        language: [python]
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up CodeQL
+      uses: github/codeql-action/init@v1
+      with:
+        languages: ${{ matrix.language }}
+        
+    - name: Build and analyze with CodeQL
+      uses: github/codeql-action/analyze@v1
+      with:
+        # Path to the CodeQL database
+        database-path: codeql-database
+        
+        # Path to the CodeQL queries
+        queries: codeql-queries
+        
+        # Additional command-line arguments for CodeQL analysis
+        # For example, to increase the available memory, use "-j 0 --ram 16000"
+        # For more options, see the CodeQL CLI documentation
+        args: |
+          --search-path=models/
+          
+    - name: Upload SARIF results
+      uses: github/codeql-action/upload-sarif@v1
+      with:
+        # Path to the CodeQL results file
+        # The CodeQL CLI outputs results in SARIF format
+        sarif_file: codeql-results.sarif
