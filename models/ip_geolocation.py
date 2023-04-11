@@ -1,7 +1,4 @@
-import os
-import json
 import geoip2.database
-import ipaddress
 import requests
 
 

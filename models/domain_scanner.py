@@ -1,7 +1,5 @@
 import socket
-import argparse
 import re
-import sys
 
 
 def scan_domain(domain, ports=None):
@@ -38,7 +36,8 @@ def enum_subdomains(domain, types=None, ports=None):
     """
     Enumerates subdomains of a domain.
     :param domain: The domain to enumerate subdomains for.
-    :param types: A list of domain types to enumerate (e.g. ['www', 'ftp']). If None, will enumerate all common subdomain types.
+    :param types: A list of domain types to enumerate (e.g. ['www', 'ftp']). If None, will enumerate all common
+    subdomain types.
     :param ports: A list of ports to scan. If None, will scan the top 1000 ports.
     :return: A dictionary containing the results of the subdomain enumeration and port scanning.
     """

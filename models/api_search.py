@@ -1,6 +1,5 @@
 import requests
 import json
-from pprint import pprint
 
 with open("models/keys.json") as f:
     keys = json.load(f)
