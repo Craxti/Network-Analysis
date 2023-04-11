@@ -12,8 +12,8 @@ from models.domain_scanner import scan_domain, enum_subdomains
 
 
 @pytest.mark.parametrize("ip_range", [
-    ("192.168.1.1/24"),
-    ("10.0.0.1/24"),
+    "192.168.1.1/24",
+    "10.0.0.1/24",
 ])
 def test_scan_network(ip_range):
     assert len(scan_network(ip_range)) > 0
@@ -41,7 +41,7 @@ def test_extract_metadata():
 
 
 def test_scan_ip():
-    assert scan_ip("8.8.8.8") == "IP is alive"
+    assert scan_ip("8.8.8.8", start_port=1, end_port=1000) == "IP is alive"
 
 
 def test_shodan_scan():
