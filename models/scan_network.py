@@ -4,7 +4,8 @@ import ipaddress
 
 def scan_ip_with_timeout(ip_address, timeout=2):
     try:
-        subprocess.run(['ping', '-c', '1', '-w', str(timeout), ip_address], check=True, stdout=subprocess.DEVNULL)
+        subprocess.run(['ping', '-c', '1', '-w', str(timeout),
+                       ip_address], check=True, stdout=subprocess.DEVNULL)
         return (ip_address, True)
     except subprocess.CalledProcessError:
         return (ip_address, False)

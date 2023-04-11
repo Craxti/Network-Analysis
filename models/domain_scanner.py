@@ -26,7 +26,7 @@ def scan_domain(domain, ports=None):
         try:
             s.connect((domain, port))
             result['open_ports'].append(port)
-        except:
+        except BaseException:
             result['closed_ports'].append(port)
         finally:
             s.close()
@@ -48,7 +48,16 @@ def enum_subdomains(domain, types=None, ports=None):
     }
 
     if not types:
-        types = ['www', 'ftp', 'mail', 'webmail', 'smtp', 'imap', 'pop', 'ns1', 'ns2']
+        types = [
+            'www',
+            'ftp',
+            'mail',
+            'webmail',
+            'smtp',
+            'imap',
+            'pop',
+            'ns1',
+            'ns2']
 
     for subdomain_type in types:
         subdomain = subdomain_type + '.' + domain
@@ -58,8 +67,9 @@ def enum_subdomains(domain, types=None, ports=None):
                 'ip': ip
             }
             if ports:
-                result['subdomains'][subdomain]['scan'] = scan_domain(ip, ports=ports)
-        except:
+                result['subdomains'][subdomain]['scan'] = scan_domain(
+                    ip, ports=ports)
+        except BaseException:
             pass
 
     return result

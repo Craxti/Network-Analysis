@@ -11,7 +11,7 @@ def get_bitcoin_address(username):
         public_key = bitcoin.privtopub(private_key)
         # Получаем адрес из публичного ключа
         address = bitcoin.pubtoaddr(public_key)
-    except:
+    except BaseException:
         return f"Error generating Bitcoin address for {username}"
     return address
 
@@ -23,6 +23,6 @@ def get_ethereum_address(username):
         private_key = Account.from_mnemonic(username).privateKey.hex()
         # Получаем адрес из приватного ключа
         address = Account.from_key(private_key).address
-    except:
+    except BaseException:
         return f"Error generating Ethereum address for {username}"
     return address

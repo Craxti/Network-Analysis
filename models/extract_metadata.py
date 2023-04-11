@@ -9,7 +9,12 @@ import exifread
 import filetype
 import zipfile
 
-def extract_metadata(file_path, output_format=None, selected_fields=None, recursive=False):
+
+def extract_metadata(
+        file_path,
+        output_format=None,
+        selected_fields=None,
+        recursive=False):
     # Get the file extension
     file_extension = os.path.splitext(file_path)[1].lower()
 

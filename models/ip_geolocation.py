@@ -7,7 +7,8 @@ import requests
 
 def ip_geolocation(ip_address):
     try:
-        # Open the GeoLite2-City database and get the geolocation data for the IP address
+        # Open the GeoLite2-City database and get the geolocation data for the
+        # IP address
         reader = geoip2.database.Reader('GeoLite2-City.mmdb')
         response = reader.city(ip_address)
         city = response.city.name
