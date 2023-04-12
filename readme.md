@@ -15,18 +15,45 @@ This tool provides various functionalities to perform network and security analy
 
 **Usage**
 
-To run the security scanner, use the following command:
+To use this tool, you can run the main.py script from the command line. The tool accepts a number of command-line arguments, which are described below:
 
-`python main.py [options]`
+`main.py [-h] [-s CIDR_ADDRESS] [-c ASN] [-t IP_ADDRESS] [-geo IP_ADDRESS] [-b EMAIL_OR_USERNAME] [-e DIRECTORY] [-f FORMAT] [-i FIELD [FIELD ...]] [-r] [-p IP_ADDRESS]
+               [--hibp] [--greynoise] [--alienvault] [--securitytrails] [-a SEARCH_TERM] [-n ADDRESS] [-d DOMAIN] [--scan {hibp,greynoise,alienvault,securitytrails}]`
 
 Options
 
-    -h, --help: Show the help message and exit.
-    --scan: Select the scan to perform. Available options: hibp, greynoise, alienvault, securitytrails.
-    --email: The email address to scan (required for hibp scan).
-    --ip: The IP address to scan (required for greynoise and alienvault scans).
-    --subdomain: The subdomain to scan (required for securitytrails scan).
-    --ip_geolocation: The IP address to geolocate using the ipstack API.
+    `
+    -h, --help            show this help message and exit
+      -s CIDR_ADDRESS, --scan_network CIDR_ADDRESS
+                            Scan a network for open ports
+      -c ASN, --check_asn ASN
+                            Check information about an ASN
+      -t IP_ADDRESS, --threat_analysis IP_ADDRESS
+                            Perform threat analysis on an IP address
+      -geo IP_ADDRESS, --ip_geolocation IP_ADDRESS
+                            Perform geolocation on an IP address
+      -b EMAIL_OR_USERNAME, --check_breaches EMAIL_OR_USERNAME
+                            Check if an email or username has been involved in a data breach
+      -e DIRECTORY, --extract_metadata DIRECTORY
+                            Extract metadata from files in a directory
+      -f FORMAT, --format FORMAT
+                            Output format (csv, json, etc.)
+      -i FIELD [FIELD ...], --include FIELD [FIELD ...]
+                            Include only specified metadata fields
+      -r, --recursive       Process files in subdirectories
+      -p IP_ADDRESS, --scan_ip IP_ADDRESS
+                            Scan an IP address for open ports
+      --hibp                Check if email has been breached using HIBP API
+      --greynoise           Get information on IP address using GreyNoise API
+      --alienvault          Get information on IP address using AlienVault API
+      --securitytrails      Get information on subdomain using SecurityTrails API
+      -a SEARCH_TERM, --api_search SEARCH_TERM
+                            Search various security APIs for information
+      -n ADDRESS, --crypto_check ADDRESS
+                            Check if an address is a valid Bitcoin or Ethereum address
+      -d DOMAIN, --domain_scanner DOMAIN
+                            Scan a domain and enumerate subdomains
+      --scan {hibp,greynoise,alienvault,securitytrails}`
 
 **Examples**
 
