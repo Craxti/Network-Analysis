@@ -7,7 +7,7 @@ from models.ip_geolocation import ip_geolocation
 from models.check_breaches import check_breaches
 from models.extract_metadata import extract_metadata
 from models.scan_ip import scan_ip
-from models.api_search import shodan_scan, hibp_breach, greynoise_ip, alienvault_ip, securitytrails_subdomain
+from models.api_search import shodan_scan, hibp_breach, greynoise_ip, alienvault_ip, securitytrails_subdomain, virustotal_search, censys_search
 from models.crypto_check import get_bitcoin_address, get_ethereum_address
 from models.domain_scanner import scan_domain, enum_subdomains
 
@@ -30,6 +30,8 @@ parser.add_argument('-p', '--scan_ip', metavar='IP_ADDRESS', help='Scan an IP ad
 parser.add_argument('--hibp', action='store_true', help='Check if email has been breached using HIBP API')
 parser.add_argument('--greynoise', action='store_true', help='Get information on IP address using GreyNoise API')
 parser.add_argument('--alienvault', action='store_true', help='Get information on IP address using AlienVault API')
+parser.add_argument('--virustotal', action='store_true', help='Get information on IP address using VirusTotal API')
+parser.add_argument('--censys', action='store_true', help='Get information on IPv4 address using Censys API')
 parser.add_argument('--securitytrails', action='store_true', help='Get information on subdomain using SecurityTrails API')
 parser.add_argument('-a', '--api_search', metavar='SEARCH_TERM', help='Search various security APIs for information')
 parser.add_argument('-n', '--crypto_check', metavar='ADDRESS', help='Check if an address is a valid Bitcoin or Ethereum address')
@@ -62,6 +64,24 @@ elif args.scan_ip:
 elif args.api_search:
     results = shodan_scan(args.api_search)
     print(results)
+elif args.hibp:
+    results = hibp_breach(args.check_breaches)
+    print(results)
+elif args.greynoise:
+    results = greynoise_ip(args.scan_ip)
+    print(results)
+elif args.alienvault:
+    results = alienvault_ip(args.scan_ip)
+    print(results)
+elif args.securitytrails:
+    results = securitytrails_subdomain(args.scan_ip)
+    print(results)
+elif args.virustotal_search:
+    result = virustotal_search(args.virustotal_search)
+    print(result)
+elif args.censys_search:
+    result = censys_search(args.censys_search)
+    print(result)
 elif args.crypto_check:
     results = get_bitcoin_address(args.crypto_check)
     print(results)

@@ -1,5 +1,4 @@
 import requests
-import json
 from bs4 import BeautifulSoup
 
 
@@ -11,15 +10,18 @@ def shodan_scan(ip):
     try:
         response = requests.get(url, headers=headers)
         soup = BeautifulSoup(response.content, "html.parser")
-        results = {}
+        results = dict()
         results["ip"] = ip
         results["os"] = soup.find("div", {"class": "os"}).text.strip()
-        results["hostnames"] = [i.text.strip() for i in soup.find_all("a", {"class": "ellipsis"})]
-        results["ports"] = [i.text.strip() for i in soup.find_all("span", {"class": "tag tag-default"}) if ":" in i.text.strip()]
+        results["hostnames"] = [i.text.strip()
+                                for i in soup.find_all("a", {"class": "ellipsis"})]
+        results["ports"] = [i.text.strip() for i in soup.find_all(
+            "span", {"class": "tag tag-default"}) if ":" in i.text.strip()]
         return results
     except requests.exceptions.RequestException as e:
         print(f"Error: {e}")
         return None
+
 
 def hibp_breach(email):
     url = f"https://haveibeenpwned.com/unifiedsearch/{email}"
@@ -30,7 +32,7 @@ def hibp_breach(email):
         response = requests.get(url, headers=headers)
         results = []
         for item in response.json()["Breaches"]:
-            result = {}
+            result = dict()
             result["title"] = item["Title"]
             result["date"] = item["BreachDate"]
             result["description"] = item["Description"]
@@ -40,11 +42,12 @@ def hibp_breach(email):
         print(f"Error: {e}")
         return None
 
+
 def greynoise_ip(ip):
     url = f"https://viz.greynoise.io/ip/{ip}"
     try:
         response = requests.get(url)
-        results = {}
+        results = dict()
         results["ip"] = ip
         results["last_seen"] = response.json()["last_seen"]
         results["classification"] = response.json()["classification"]
@@ -53,17 +56,19 @@ def greynoise_ip(ip):
         print(f"Error: {e}")
         return None
 
+
 def alienvault_ip(ip):
     url = f"https://otx.alienvault.com/api/v1/indicators/ip/{ip}/reputation"
     try:
         response = requests.get(url)
-        results = {}
+        results = dict()
         results["ip"] = ip
         results["reputation"] = response.json()["reputation"]
         return results
     except requests.exceptions.RequestException as e:
         print(f"Error: {e}")
         return None
+
 
 def securitytrails_subdomain(domain):
     url = f"https://securitytrails.com/list/ip/{domain}"
@@ -77,12 +82,49 @@ def securitytrails_subdomain(domain):
         subdomains.append(subdomain.text)
     return subdomains
 
-#with open("keys.json") as f:
+
+def virustotal_search(search_term):
+    """
+    Search VirusTotal for information related to a search term
+    """
+    url = f'https://www.virustotal.com/gui/search/{search_term}/files'
+    response = requests.get(url)
+    soup = BeautifulSoup(response.text, 'html.parser')
+    results = []
+
+    for result in soup.find_all('div', class_='enum-result'):
+        name = result.find('a', class_='enum-link').text.strip()
+        sha256 = result.find('span', class_='enum-file-hash').text.strip()
+        results.append({'name': name, 'sha256': sha256})
+
+    return results
+
+
+def censys_search(search_term):
+    """
+    Search Censys for information related to a search term
+    """
+    url = f'https://censys.io/ipv4?q={search_term}'
+    response = requests.get(url)
+    soup = BeautifulSoup(response.text, 'html.parser')
+    results = []
+
+    for result in soup.find_all('tr'):
+        ip_address = result.find(
+            'a', class_='text-overflow-ellipsis').text.strip()
+        port_protocol = result.find(
+            'td', class_='protocol-popover').text.strip()
+        results.append({'ip_address': ip_address,
+                       'port_protocol': port_protocol})
+
+    return results
+
+# with open("keys.json") as f:
 #    keys = json.load(f)
 
 
 # Shodan API
-#def shodan_scan(ip, timeout=10):
+# def shodan_scan(ip, timeout=10):
 #    api_key = keys["shodan"]
 #    url = f"https://api.shodan.io/shodan/host/{ip}?key={api_key}"
 #    try:
@@ -94,7 +136,7 @@ def securitytrails_subdomain(domain):
 
 
 # HaveIBeenPwned API
-#def hibp_breach(email):
+# def hibp_breach(email):
 #    url = f"https://haveibeenpwned.com/api/v3/breachedaccount/{email}"
 #    headers = {
 #        "hibp-api-key": keys["hibp"]
@@ -104,7 +146,7 @@ def securitytrails_subdomain(domain):
 
 
 # GreyNoise API
-#def greynoise_ip(ip):
+# def greynoise_ip(ip):
 #    api_key = keys["greynoise"]
 #    url = f"https://api.greynoise.io/v3/community/{ip}"
 #    headers = {
@@ -115,7 +157,7 @@ def securitytrails_subdomain(domain):
 
 
 # AlienVault API
-#def alienvault_ip(ip):
+# def alienvault_ip(ip):
 #    api_key = keys["alienvault"]
 #    url = f"https://otx.alienvault.com/api/v1/indicators/ip/{ip}/reputation"
 #    params = {
@@ -126,7 +168,7 @@ def securitytrails_subdomain(domain):
 
 
 # SecurityTrails API
-#def securitytrails_subdomain(domain):
+# def securitytrails_subdomain(domain):
 #    api_key = keys["securitytrails"]
 #    url = f"https://api.securitytrails.com/v1/domain/{domain}/subdomains"
 #    headers = {
