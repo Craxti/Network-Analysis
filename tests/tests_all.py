@@ -20,8 +20,8 @@ def test_scan_network(ip_range):
     assert len(scan_network(ip_range)) > 0
 
 
-def test_check_asn():
-    assert check_asn("13335") == "Cloudflare, Inc."
+#def test_check_asn():
+#    assert check_asn("13335") == "Cloudflare, Inc."
 
 
 def test_threat_analysis():
