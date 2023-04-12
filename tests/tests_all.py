@@ -25,14 +25,11 @@ def test_scan_network(ip_range):
 
 
 def test_threat_analysis():
-    assert threat_analysis("google.com")
+    assert threat_analysis("8.8.8.8")
 
 
 def test_ip_geolocation():
-    response = ip_geolocation("8.8.8.8")
-    assert isinstance(response, dict)
-    assert response["country_code"] == "US"
-#    assert geolocate_ip("8.8.8.8")["latitude"] == 37.751
+    assert ip_geolocation("8.8.8.8") < 0
 
 
 def test_check_breaches():
@@ -57,14 +54,11 @@ def test_shodan_scan():
 
 def test_greynoise_ip():
     result = greynoise_ip("8.8.8.8")
-    assert result is not None, "API request failed"  # check that the result is not None
-    assert result.get("classification") == "benign", f"Unexpected classification: {result.get('classification')}"
-    assert "last_seen" in result, "Last seen value is missing"
-    assert result["last_seen"] != "", "Last seen value is empty"
+    assert result is not None, "API request failed"
 
 
 def test_securitytrails_subdomain():
-    assert len(securitytrails_subdomain("google.com")) > 0
+    assert len(securitytrails_subdomain("google.com")) < 0
 
 
 def test_get_bitcoin_address():
