@@ -27,3 +27,4 @@ Pillow
 pdfminer
 beautifulsoup4
 geoip2
+python-nmap
