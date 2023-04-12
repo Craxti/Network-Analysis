@@ -1,27 +1,25 @@
 import requests
-
+from bs4 import BeautifulSoup
 
 def check_asn(asn):
-    url = f"https://stat.ripe.net/data/as-overview/data.json?resource=AS{asn}"
+    url = f"https://ipinfo.io/AS{asn}"
     try:
         response = requests.get(url)
-        response.raise_for_status()
-        data = response.json()
-
-        if "data" not in data or "as-overview" not in data["data"]:
-            return f"No information found for ASN {asn}"
-
-        overview = data["data"]["as-overview"]
-        asn_data = {
-            "asn": overview["asn"],
-            "holder": overview["holder"],
-            "prefixes": overview["num-prefixes"],
-            "peers": overview["num-peers"],
-            "members": overview["num-members"],
-            "routes": overview["num-routes"],
-        }
-
-        return asn_data
-
-    except requests.exceptions.HTTPError as e:
-        return f"Error: {e}"
+        soup = BeautifulSoup(response.content, "html.parser")
+        heading = soup.find("div", {"id": "block-whois"}).find("h2").text.strip()
+        tables = soup.find_all("div", {"class": "border p-3"})
+        result = {heading: {}}
+        for table in tables:
+            for pre in table.find_all("pre"):
+                items = pre.text.split("\n\n")
+                for item in items:
+                    item = item.strip()
+                    if item:
+                        key, value = item.split(":", 1)
+                        result[heading][key.strip()] = value.strip()
+        return result
+    except Exception as e:
+        print(f"Error: {e}")
+        return None
+asn_info = check_asn(13335)
+print(asn_info)

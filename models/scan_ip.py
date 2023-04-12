@@ -14,7 +14,14 @@ def scan_port(ip, port):
         pass
 
 
-def scan_ip(ip_address, start_port, end_port):
-    with ThreadPoolExecutor(max_workers=10) as executor:
-        for port in range(start_port, end_port + 1):
-            executor.submit(scan_port, ip_address, port)
+import socket
+
+def scan_ip(ip, start_port, end_port):
+    for port in range(start_port, end_port+1):
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock.settimeout(1)
+        result = sock.connect_ex((ip, port))
+        if result == 0:
+            return "IP is alive"
+        sock.close()
+    return "IP is dead"

@@ -1,5 +1,7 @@
 import geoip2.database
 import requests
+import logging
+
 
 
 def ip_geolocation(ip_address):

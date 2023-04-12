@@ -1,5 +1,4 @@
 import socket
-import re
 
 
 def scan_domain(domain, ports=None):
@@ -81,12 +80,15 @@ def get_top_ports(num_ports):
     :return: A list of the top num_ports most commonly used ports.
     """
     top_ports = []
-    with open('/etc/services', 'r') as f:
-        lines = f.readlines()
-        for line in lines:
-            match = re.search(r'^\w+\s+(\d+)/\w+', line)
-            if match:
-                top_ports.append(int(match.group(1)))
-            if len(top_ports) == num_ports:
-                break
+    try:
+        with open('/etc/services', 'r') as f:
+            lines = f.readlines()
+            for line in lines:
+                parts = line.split()
+                if len(parts) > 1 and parts[1].isdigit():
+                    top_ports.append(int(parts[1]))
+                    if len(top_ports) >= num_ports:
+                        break
+    except FileNotFoundError:
+        pass
     return top_ports

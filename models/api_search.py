@@ -1,5 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
+import json
 
 
 def shodan_scan(ip):
@@ -12,15 +13,16 @@ def shodan_scan(ip):
         soup = BeautifulSoup(response.content, "html.parser")
         results = dict()
         results["ip"] = ip
-        results["os"] = soup.find("div", {"class": "os"}).text.strip()
-        results["hostnames"] = [i.text.strip()
-                                for i in soup.find_all("a", {"class": "ellipsis"})]
-        results["ports"] = [i.text.strip() for i in soup.find_all(
-            "span", {"class": "tag tag-default"}) if ":" in i.text.strip()]
+        os_tag = soup.find("div", {"class": "os"})
+        if os_tag is not None:
+            results["os"] = os_tag.text.strip()
+        else:
+            results["os"] = "N/A"
         return results
-    except requests.exceptions.RequestException as e:
-        print(f"Error: {e}")
+    except Exception as e:
+        print(e)
         return None
+
 
 
 def hibp_breach(email):
@@ -47,11 +49,16 @@ def greynoise_ip(ip):
     url = f"https://viz.greynoise.io/ip/{ip}"
     try:
         response = requests.get(url)
-        results = dict()
-        results["ip"] = ip
-        results["last_seen"] = response.json()["last_seen"]
-        results["classification"] = response.json()["classification"]
-        return results
+        if response.status_code == 200:
+            soup = BeautifulSoup(response.text, 'html.parser')
+            results = dict()
+            results["ip"] = ip
+            results["last_seen"] = soup.find("td", string="UPDATED").find_previous_sibling("td").get_text()
+            results["classification"] = soup.find("td", string="DESCRIPTION2").find_previous_sibling("td").get_text().strip()
+            return results
+        else:
+            print(f"Error: Status code {response.status_code}")
+            return None
     except requests.exceptions.RequestException as e:
         print(f"Error: {e}")
         return None

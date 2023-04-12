@@ -7,7 +7,7 @@ from models.ip_geolocation import ip_geolocation
 from models.check_breaches import check_breaches
 from models.extract_metadata import extract_metadata
 from models.scan_ip import scan_ip
-from models.api_search import shodan_scan, hibp_breach, greynoise_ip, alienvault_ip, securitytrails_subdomain, virustotal_search, censys_search
+from models.api_search import shodan_scan, hibp_breach, greynoise_ip, securitytrails_subdomain, virustotal_search, censys_search
 from models.crypto_check import get_bitcoin_address, get_ethereum_address
 from models.domain_scanner import scan_domain, enum_subdomains
 
@@ -70,9 +70,6 @@ elif args.hibp:
 elif args.greynoise:
     results = greynoise_ip(args.scan_ip)
     print(results)
-elif args.alienvault:
-    results = alienvault_ip(args.scan_ip)
-    print(results)
 elif args.securitytrails:
     results = securitytrails_subdomain(args.scan_ip)
     print(results)
@@ -96,8 +93,6 @@ elif args.scan == 'hibp' and args.email:
     hibp_breach(args.email)
 elif args.scan == 'greynoise' and args.ip:
     greynoise_ip(args.ip)
-elif args.scan == 'alienvault' and args.ip:
-    alienvault_ip(args.ip)
 elif args.scan == 'securitytrails' and args.subdomain:
     securitytrails_subdomain(args.subdomain)
 elif args.ip_geolocation:
