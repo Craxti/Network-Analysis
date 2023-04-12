@@ -19,7 +19,7 @@ parser.add_argument('-s', '--scan_network', metavar='CIDR_ADDRESS', help='Scan a
 parser.add_argument('-c', '--check_asn', metavar='ASN', help='Check information about an ASN')
 parser.add_argument('-t', '--threat_analysis', metavar='IP_ADDRESS', help='Perform threat analysis on an IP address')
 parser.add_argument('-geo', '--ip_geolocation', metavar='IP_ADDRESS', help='Perform threat analysis on an IP address')
-parser.add_argument('-b', '--check_breaches', metavar='EMAIL', help='Check if an email has been involved in a data breach')
+parser.add_argument('-b', '--check_breaches', metavar='EMAIL_OR_USERNAME', help='Check if an email or username has been involved in a data breach')
 #extract_metadata
 parser.add_argument('-e', '--extract_metadata', metavar='DIRECTORY', help='Extract metadata from files in a directory')
 parser.add_argument('-f', '--format', metavar='FORMAT', help='Output format (csv, json, etc.)')
@@ -49,7 +49,6 @@ elif args.check_asn:
     print(results)
 elif args.threat_analysis:
     results = threat_analysis(args.threat_analysis)
-    print(results)
     print(results)
 elif args.check_breaches:
     results = check_breaches(args.check_breaches)
