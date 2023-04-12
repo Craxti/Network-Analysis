@@ -26,14 +26,19 @@ def shodan_scan(ip):
 
 
 def hibp_breach(email):
-    url = f"https://haveibeenpwned.com/unifiedsearch/{email}"
-    headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36 Edge/16.16299"
-    }
+    # Load API key from keys.json
+    with open("keys.json") as f:
+        keys = json.load(f)
+        api_key = keys["hibp"]
+
+    # Make API request
+    url = f"https://haveibeenpwned.com/api/v3/breachedaccount/{email}"
+    headers = {"hibp-api-key": api_key}
     try:
         response = requests.get(url, headers=headers)
+        response.raise_for_status()
         results = []
-        for item in response.json()["Breaches"]:
+        for item in response.json():
             result = dict()
             result["title"] = item["Title"]
             result["date"] = item["BreachDate"]
@@ -53,8 +58,16 @@ def greynoise_ip(ip):
             soup = BeautifulSoup(response.text, 'html.parser')
             results = dict()
             results["ip"] = ip
-            results["last_seen"] = soup.find("td", string="UPDATED").find_previous_sibling("td").get_text()
-            results["classification"] = soup.find("td", string="DESCRIPTION2").find_previous_sibling("td").get_text().strip()
+            updated = soup.find("td", string="UPDATED")
+            if updated:
+                results["last_seen"] = updated.find_previous_sibling("td").get_text()
+            else:
+                results["last_seen"] = ""
+            classification = soup.find("td", string="DESCRIPTION2")
+            if classification:
+                results["classification"] = classification.find_previous_sibling("td").get_text().strip()
+            else:
+                results["classification"] = ""
             return results
         else:
             print(f"Error: Status code {response.status_code}")
@@ -62,6 +75,7 @@ def greynoise_ip(ip):
     except requests.exceptions.RequestException as e:
         print(f"Error: {e}")
         return None
+
 
 
 def alienvault_ip(ip):
