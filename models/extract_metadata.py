@@ -7,6 +7,8 @@ from docx import Document
 from pptx import Presentation
 import exifread
 import filetype
+import requests
+from bs4 import BeautifulSoup
 
 
 def extract_metadata(
@@ -54,6 +56,18 @@ def extract_metadata(
                         if text != "":
                             metadata.append(text)
 
+    elif file_extension == ".html" or file_extension == ".htm":
+        with open(file_path, "r", encoding="utf-8") as f:
+            html = f.read()
+        soup = BeautifulSoup(html, "html.parser")
+        metadata = {}
+        metadata["title"] = soup.title.string.strip() if soup.title else ""
+        description = soup.find("meta", attrs={"name": "description"})
+        metadata["description"] = description["content"].strip() if description else ""
+        keywords = soup.find("meta", attrs={"name": "keywords"})
+        metadata["keywords"] = keywords["content"].strip() if keywords else ""
+
+
     else:
         kind = filetype.guess(file_path)
         if kind is None:
@@ -74,5 +88,26 @@ def extract_metadata(
     elif output_format == "json":
         with open('metadata.json', mode='w') as metadata_file:
             json.dump(metadata, metadata_file)
+
+    return metadata
+
+
+def extract_metadata_from_web(url):
+    # Fetch webpage HTML
+    r = requests.get(url)
+    html_doc = r.text
+
+    # Parse HTML with BeautifulSoup
+    soup = BeautifulSoup(html_doc, 'html.parser')
+
+    # Extract metadata
+    metadata = {}
+    metadata['title'] = soup.title.string
+    for meta in soup.find_all('meta'):
+        if 'name' in meta.attrs and 'content' in meta.attrs:
+            name = meta.attrs['name'].lower()
+            content = meta.attrs['content']
+            if name != '' and content != '':
+                metadata[name] = content
 
     return metadata
