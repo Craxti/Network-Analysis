@@ -1,4 +1,3 @@
-import os
 import pytest
 from models.api_search import shodan_scan, hibp_breach, greynoise_ip, alienvault_ip, securitytrails_subdomain
 
