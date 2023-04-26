@@ -12,7 +12,7 @@ class Threat:
         return f"{self.name} ({self.score}): {self.description}"
 
 
-def threat_analysis(ip_address):
+def check_malware(ip_address):
     threats = []
 
     # Check for malware and phishing using urlquery.net
@@ -36,6 +36,53 @@ def threat_analysis(ip_address):
         score = 8
         threats.append(Threat(name, description, score))
 
+    # Check for malware using VirusTotal API
+    url = "https://www.virustotal.com/vtapi/v2/ip-address/report"
+    params = {
+        "apikey": "YOUR_API_KEY",
+        "ip": ip_address
+    }
+    response = requests.get(url, params=params)
+    result = response.json()
+
+    if result["response_code"] == 1 and "detected_urls" in result:
+        name = "Malware"
+        count = len(result["detected_urls"])
+        description = f"This IP has been associated with {count} known malware URLs."
+        score = count * 2
+        threats.append(Threat(name, description, score))
+
+    return threats
+
+
+def check_botnet(ip_address):
+    threats = []
+
+    # Check for botnet activity using GreyNoise API
+    url = "https://api.greynoise.io/v3/community/quick"
+    headers = {
+        "Accept": "application/json",
+        "Content-Type": "application/json",
+        "Key": "YOUR_API_KEY"
+    }
+    data = {
+        "ip": ip_address
+    }
+    response = requests.post(url, headers=headers, json=data)
+    result = response.json()
+
+    if "noise" in result and result["noise"] == "Botnet":
+        name = "Botnet Activity"
+        description = "This IP has been associated with botnet activity."
+        score = 9
+        threats.append(Threat(name, description, score))
+
+    return threats
+
+
+def check_brute_force(ip_address):
+    threats = []
+
     # Check for brute force attacks using badips.com
     url = f"https://www.badips.com/get/list/ssh/2?ip={ip_address}"
     response = requests.get(url)
@@ -50,3 +97,13 @@ def threat_analysis(ip_address):
         threats.append(Threat(name, description, score))
 
     return threats
+
+
+def threat_analysis(ip_address):
+    threats = []
+
+    threats += check_botnet(ip_address)
+    threats += check_brute_force(ip_address)
+
+    return threats
+
