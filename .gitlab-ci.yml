@@ -1,0 +1,33 @@
+image: python:3.8-slim-buster
+
+before_script:
+  - apt-get update
+  - apt-get -y install gcc libpcap-dev libssl-dev
+  - pip install -U pip poetry
+  - poetry install --no-root --no-dev
+
+lint:
+  stage: test
+  script:
+    - pylint --rcfile=.pylintrc network_analysis/
+  allow_failure: true
+
+test:
+  stage: test
+  script:
+    - pytest -v network_analysis/
+  allow_failure: true
+
+build:
+  stage: build
+  script:
+    - python setup.py sdist bdist_wheel
+
+publish:
+  stage: deploy
+  script:
+    - poetry config repositories.my-repo https://my.repo.com
+    - poetry build
+    - poetry publish --username $PYPI_USERNAME --password $PYPI_PASSWORD --repository my-repo
+  only:
+    - tags
