@@ -27,6 +27,14 @@ from models.domain_scanner import scan_domain, enum_subdomains
 #def test_threat_analysis():
 #    assert threat_analysis("8.8.8.8")
 
+def test_check_malware():
+    assert len(check_malware("8.8.8.8")) > 0
+
+#def test_check_botnet():
+    # Check a known botnet IP address
+#    threats = check_botnet("185.255.56.56")
+#    assert len(threats) > 0, "Expected threats for known botnet IP"
+
 
 def test_ip_geolocation():
     assert ip_geolocation("8.8.8.8") is not None

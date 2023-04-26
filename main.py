@@ -2,7 +2,7 @@ import argparse
 
 from models.scan_network import scan_network
 from models.check_asn import check_asn
-from models.threat_analysis import threat_analysis, check_malware, check_botnet, check_brute_force
+from models.threat_analysis import threat_analysis
 from models.ip_geolocation import ip_geolocation
 from models.check_breaches import check_breaches
 from models.extract_metadata import extract_metadata
@@ -52,12 +52,6 @@ elif args.check_asn:
     print(results)
 elif args.threat_analysis:
     results = threat_analysis(args.threat_analysis)
-    print(results)
-    results = check_malware(args.threat_analysis)
-    print(results)
-    results = check_botnet(args.threat_analysis)
-    print(results)
-    results = check_brute_force(args.threat_analysis)
     print(results)
 elif args.check_breaches:
     results = check_breaches(args.check_breaches)
