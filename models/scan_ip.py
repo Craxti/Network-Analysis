@@ -14,8 +14,6 @@ def scan_port(ip, port):
         pass
 
 
-import socket
-
 def scan_ip(ip, start_port, end_port):
     for port in range(start_port, end_port+1):
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
