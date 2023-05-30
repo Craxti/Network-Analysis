@@ -3,6 +3,15 @@
 This tool provides various functionalities to perform network and security analysis. The tool utilizes argparse module to allow users to select the desired functionality through command-line arguments.
 
 
+## Table of Contents
+
+- [Installation](#installation)
+- [Usage](#usage)
+- [Features](#features)
+- [Contributing](#contributing)
+- [License](#license)
+
+
 **Installation**
 
 1. Clone the repository:
