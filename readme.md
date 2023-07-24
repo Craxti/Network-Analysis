@@ -16,7 +16,7 @@ This tool provides various functionalities to perform network and security analy
 
 1. Clone the repository:
 
-`git clone https://github.com/exampleuser/security-scanner.git`
+`git clone https://github.com/craxti/network-analysis.git`
 
 2. Install the required packages:
 
