@@ -99,4 +99,4 @@ elif args.scan == 'securitytrails' and args.subdomain:
 elif args.ip_geolocation:
     result = ip_geolocation(args.ip_geolocation)
 else:
-    parser.print_help()
+    parser.print_help() 
